@@ -69,8 +69,8 @@ MarkerControl.prototype.create = function(wrapper) {
 		}
 	}(this.handler));
 	
-	listGroup.appendChild(buttonShowAll);
-	listGroup.appendChild(buttonHideAll);
+//	listGroup.appendChild(buttonShowAll);
+//	listGroup.appendChild(buttonHideAll);
 
 	wrapper.appendChild(Util.createPanelHeader("Markers"));
 	wrapper.appendChild(listGroup);

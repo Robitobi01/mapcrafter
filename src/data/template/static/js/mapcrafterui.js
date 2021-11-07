@@ -145,7 +145,8 @@ function MapcrafterUI(config) {
 MapcrafterUI.prototype.init = function() {
 	// create the leaflet map object
 	this.lmap = L.map("mcmap", {
-		crs: L.CRS.Simple
+		crs: L.CRS.Simple,
+        attributionControl: false
 	}).setView([0, 0], 0, {animate: false});
 	this.lmap.attributionControl.addAttribution("Map rendered with <a href='http://mapcrafter.org'>Mapcrafter</a>");
 	
@@ -272,7 +273,7 @@ MapcrafterUI.prototype.setMapAndRotation = function(map, rotation) {
 			this.lmap.setView(this.mcToLatLng(x, z, y), zoom, {animate: false});
 		} else {
 			var center = mapConfig.tileSize / 2;
-			this.lmap.setView(this.lmap.unproject([center, center]), zoom, {animate: false});
+			this.lmap.setView(this.mcToLatLng(0, 0, 0), zoom, {animate: false});
 		}
 
 	} else {

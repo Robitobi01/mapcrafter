@@ -14,12 +14,16 @@ RotationSelectControl.prototype.create = function(wrapper) {
 	buttonGroup.setAttribute("class", "btn-group");
 	buttonGroup.setAttribute("role", "group");
 
-	var names = ["tl", "tr", "br", "bl"];
-	for(var i = 0; i < 4; i++) {
+	var names = ["tl", "tr", "br", "bl", "tl-iso", "tr-iso", "br-iso", "bl-iso"];
+	for(var i = 0; i < 8; i++) {
 		var button = document.createElement("button");
 		button.setAttribute("class", "btn btn-default");
-		button.setAttribute("data-rotation", i);
-		button.addEventListener("click", (function(ui) {
+        if(i > 3) {
+            button.setAttribute("data-rotation", i - 4);
+        } else {
+            button.setAttribute("data-rotation", i);
+        }
+        button.addEventListener("click", (function(ui) {
 			return function(event) {
 				ui.setMapRotation(this.getAttribute("data-rotation"));
 			};

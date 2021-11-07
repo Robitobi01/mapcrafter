@@ -68,3 +68,8 @@ body {
 	width: 30px;
 	margin: 3px;
 }
+
+#message-box {
+    display: block;
+    padding: 3px;
+}
