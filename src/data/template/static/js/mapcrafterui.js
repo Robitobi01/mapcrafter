@@ -148,7 +148,6 @@ MapcrafterUI.prototype.init = function() {
 		crs: L.CRS.Simple,
         attributionControl: false
 	}).setView([0, 0], 0, {animate: false});
-	this.lmap.attributionControl.addAttribution("Map rendered with <a href='http://mapcrafter.org'>Mapcrafter</a>");
 	
 	// initialize the maps
 	var firstMap = null;

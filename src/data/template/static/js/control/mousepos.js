@@ -17,9 +17,9 @@ MousePosControl.prototype.create = function(wrapper) {
 	var text = document.createElement("span");
 	text.setAttribute("id", "mouse-move-div");
     text.innerHTML = '<div class="btn-group" role="group">'
-			+ '<button type="button" class="btn btn-default" id="btn-x" onclick="MousePosControl.prototype.copyToClipboard(\'btn-x\')"></button>'
-			+ '<button type="button" class="btn btn-default" id="btn-z" onclick="MousePosControl.prototype.copyToClipboard(\'btn-z\')"></button>'
-            + '<button type="button" class="btn btn-default" id="btn-mca" onclick="MousePosControl.prototype.copyToClipboard(\'btn-mca\')"></button>'
+			+ '<button type="button" class="btn btn-default" id="btn-x" onclick="MousePosControl.prototype.copyId(\'btn-x\')"></button>'
+			+ '<button type="button" class="btn btn-default" id="btn-z" onclick="MousePosControl.prototype.copyId(\'btn-z\')"></button>'
+            + '<button type="button" class="btn btn-default" id="btn-mca" onclick="MousePosControl.prototype.copyId(\'btn-mca\')"></button>'
 			+ "</div>";
 
 	var updatePos = function(ui) {
@@ -39,12 +39,26 @@ MousePosControl.prototype.getName = function() {
 	return 'mouse-pos';
 };
 
-MousePosControl.prototype.copyToClipboard = function(id) {
-    var text = document.createElement('textarea');
+MousePosControl.prototype.copyId = function(id) {
+	toClipboard(getValue(id));
+};
+
+MousePosControl.prototype.copyPos = function() {
+    var value = getValue('btn-x');
+    value += ' 100 ' + getValue('btn-z');
+    toClipboard(value);
+};
+
+function getValue(id) {
     var value = document.getElementById(id).innerHTML;
     if (value.includes(' ')) {
         value = value.split(' ', 2)[1];
     }
+    return value;
+}
+
+function toClipboard(value) {
+    var text = document.createElement('textarea');
     text.value = value;
     document.body.appendChild(text);
     text.select();
@@ -54,4 +68,4 @@ MousePosControl.prototype.copyToClipboard = function(id) {
     box.innerHTML = "Copied: " + value;
     box.style.display = "block";
     setTimeout(function(){box.style.display = "none";}, 1000);
-};
+}
