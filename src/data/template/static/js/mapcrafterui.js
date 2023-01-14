@@ -33,6 +33,7 @@ var MCTileLayer = L.TileLayer.extend({
  */
 function createMCTileLayer(mapName, mapConfig, mapRotation) {
 	return new MCTileLayer(mapName + "/" + ["tl", "tr", "br", "bl"][mapRotation], {
+		minZoom: 13,
 		maxZoom: mapConfig.maxZoom,
 		tileSize: mapConfig.tileSize,
 		noWrap: true,
@@ -126,6 +127,9 @@ function MapcrafterUI(config) {
 	this.lmap = null;
 	// leaflet layers of different maps/rotations, access them with layers[map][rotation]
 	this.layers = {};
+
+	this.chunkLayer = null;
+	this.chunks = null;
 	
 	// array of handlers to be called when map/rotation is changed
 	this.handlers = [];
@@ -150,6 +154,9 @@ MapcrafterUI.prototype.init = function() {
 	}).setView([0, 0], 0, {animate: false});
 	
 	// initialize the maps
+	this.chunkLayer = new L.layerGroup();
+	this.lmap.addLayer(this.chunkLayer);
+
 	var firstMap = null;
 	for(var i in this.config["mapsOrder"]) {
 		var map = this.config["mapsOrder"][i];
@@ -177,6 +184,9 @@ MapcrafterUI.prototype.init = function() {
 		
 	this.controlsNotCreated = [];
 	this.handlersNotCreated = [];
+	var self = this;
+	this.updateChunkData();
+	setInterval(function() { self.updateChunkData(); }, 10000);
 };
 
 /**
@@ -285,6 +295,54 @@ MapcrafterUI.prototype.setMapAndRotation = function(map, rotation) {
 		this.handlers[i].onMapChange(this.currentMap, this.currentRotation);
 };
 
+MapcrafterUI.prototype.updateChunkData = function() {
+	fetch("chunks.json")
+	.then(response => response.json())
+	.then(data => {
+	  this.chunks = data;
+	  if (this.getCurrentMapConfig().renderView == "topdown") {
+		this.updateChunks();
+	  }
+	})
+	.catch(error => {
+	  console.error("Error:", error);
+	});
+}
+
+MapcrafterUI.prototype.updateChunks = function() {
+	this.chunkLayer.clearLayers();
+	for (const chunk in this.chunks) {
+		var chunk_data = chunk.split(" ").map(Number);
+		var dimension = chunk_data[0];
+		var x = chunk_data[1];
+		var z = chunk_data[2];
+		var type = this.chunks[chunk]["Type"];
+		if (this.getCurrentMapConfig().world.includes("creative")) {
+			continue;
+		}
+		if (dimension == 0 && !this.getCurrentMapConfig().world.includes("ow")) {
+			continue;
+		}
+		if (dimension == 1 && !this.getCurrentMapConfig().world.includes("nether")) {
+			continue;
+		}
+		if (dimension == 2 && !this.getCurrentMapConfig().world.includes("end")) {
+			continue;
+		}
+		var corner1 = this.mcToLatLng(x * 16, z * 16, 0);
+		var corner2 = this.mcToLatLng(x * 16 + 16, z * 16 + 16, 0);
+		var properties = {color: "#FF0000", weight: 1, fillOpacity: 0.3, clickable: false}
+		if (type == 0) {
+			properties = {color: "#F8E71C", weight: 1, fillOpacity: 0.3, clickable: false}
+		}
+		if (type == 1) {
+			properties = {color: "#00FF2A", weight: 1, fillOpacity: 0.3, clickable: false}
+		}
+		var rect = new L.Rectangle([[corner1.lat, corner1.lng], [corner2.lat, corner2.lng]] , properties);
+		rect.addTo(this.chunkLayer);
+	}
+};
+
 /**
  * Sets the current map. Tries to keep the current rotation if available, otherwise
  * uses the first available rotation of the new map.
@@ -306,6 +364,11 @@ MapcrafterUI.prototype.setMap = function(map) {
 		if(mapConfig.rotations.indexOf(rotation) == -1)
 			rotation = mapConfig.rotations[0];
 		this.setMapAndRotation(map, rotation);
+	}
+	if (this.chunks && mapConfig.renderView == "topdown") {
+		this.updateChunks();
+	} else {
+		this.chunkLayer.clearLayers();
 	}
 };
 
