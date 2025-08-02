@@ -236,16 +236,19 @@ namespace picojson {
     }
   }
   
-  inline value::value(const value& x) : type_(x.type_) {
+  inline value::value(const value& x)
+    : type_(x.type_)
+  {
     switch (type_) {
-#define INIT(p, v) case p##type: u_.p = v; break
+  #define INIT(p, v) case p##type: u_.p = v; break
       INIT(string_, new std::string(*x.u_.string_));
-      INIT(array_, new array(*x.u_.array_));
-      INIT(object_, new object(*x.u_.object_));
-#undef INIT
-    default:
-      u_ = x.u_;
-      break;
+      INIT(array_,  new array      (*x.u_.array_ ));
+      INIT(object_, new object     (*x.u_.object_));
+  #undef INIT
+      default:
+        std::memset(&u_, 0, sizeof(u_)); // zero the union storage, then copy all bytes
+        std::memcpy(&u_, &x.u_, sizeof(u_));
+        break;
     }
   }
   

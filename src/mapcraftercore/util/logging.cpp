@@ -265,8 +265,9 @@ LogSyslogSink::~LogSyslogSink() {
 }
 
 void LogSyslogSink::sink(const LogMessage& message) {
-	syslog(LogLevelHelper::levelToSyslog(message.level),
-			util::replaceAll(message.message, "%", "%%").c_str());
+  int priority = LogLevelHelper::levelToSyslog(message.level);
+  std::string sanitized = util::replaceAll(message.message, "%", "%%");
+  syslog(priority, "%s", sanitized.c_str());
 }
 
 #endif
