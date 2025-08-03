@@ -56,9 +56,17 @@ public:
 	virtual void dump(std::ostream& out) const;
 
 	void setConfigDir(const fs::path& config_dir);
+	
+ void overrideTemplateDir(const fs::path& dir) {
+    template_dir.setValue(dir);
+  }
+  void overrideTextureDir(const fs::path& dir) {
+    texture_dir.setValue(dir);
+  }
 
 	fs::path getOutputDir() const;
 	fs::path getTemplateDir() const;
+	fs::path getTextureDir() const;
 	Color getBackgroundColor() const;
 
 protected:
@@ -72,7 +80,7 @@ protected:
 private:
 	fs::path config_dir;
 
-	Field<fs::path> output_dir, template_dir;
+	Field<fs::path> output_dir, template_dir, texture_dir;
 	Field<Color> background_color;
 };
 
@@ -86,9 +94,17 @@ public:
 	void dump(std::ostream& out) const;
 
 	void configureLogging() const;
+  
+	void overrideTemplateDir(const fs::path& dir) {
+    root_section.overrideTemplateDir(dir);
+  }
+  void overrideTextureDir(const fs::path& dir) {
+    root_section.overrideTextureDir(dir);
+  }
 
 	fs::path getOutputDir() const;
 	fs::path getTemplateDir() const;
+	fs::path getTextureDir() const;
 	fs::path getOutputPath(const std::string& path) const;
 	fs::path getTemplatePath(const std::string& path) const;
 

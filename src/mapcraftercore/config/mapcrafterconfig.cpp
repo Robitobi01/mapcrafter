@@ -85,15 +85,22 @@ fs::path MapcrafterConfigRootSection::getTemplateDir() const {
 	return template_dir.getValue();
 }
 
+fs::path MapcrafterConfigRootSection::getTextureDir() const {
+    return texture_dir.getValue();
+}
+
 Color MapcrafterConfigRootSection::getBackgroundColor() const {
 	return background_color.getValue();
 }
 
 void MapcrafterConfigRootSection::preParse(const INIConfigSection& section,
 		ValidationList& validation) {
-	fs::path default_template_dir = util::findTemplateDir();
-	if (!default_template_dir.empty())
-		template_dir.setDefault(default_template_dir);
+	fs::path default_template = util::findTemplateDir();
+  if (!default_template.empty())
+    template_dir.setDefault(default_template);
+  fs::path default_texture = util::findTextureDir();
+  if (!default_texture.empty())
+    texture_dir.setDefault(default_texture);
 	background_color.setDefault({"#DDDDDD", 0xDD, 0xDD, 0xDD});
 }
 
@@ -109,7 +116,15 @@ bool MapcrafterConfigRootSection::parseField(const std::string key,
 				validation.error("'template_dir' must be an existing directory! '"
 						+ template_dir.getValue().string() + "' does not exist!");
 		}
-	} else if (key == "background_color") {
+	} else if (key == "texture_dir") {
+    if (texture_dir.load(key, value, validation)) {
+      texture_dir.setValue(BOOST_FS_ABSOLUTE(texture_dir.getValue(), config_dir));
+      if (!fs::is_directory(texture_dir.getValue()))
+        validation.error(
+          "'texture_dir' must be an existing directory! '"
+          + texture_dir.getValue().string() + "' does not exist!");
+    }
+  } else if (key == "background_color") {
 		background_color.load(key, value, validation);
 	} else
 		return false;
@@ -120,6 +135,7 @@ void MapcrafterConfigRootSection::postParse(const INIConfigSection& section,
 		ValidationList& validation) {
 	output_dir.require(validation, "You have to specify an output directory ('output_dir')!");
 	template_dir.require(validation, "You have to specify a template directory ('template_dir')!");
+  texture_dir.require(validation,   "You have to specify a texture directory ('texture_dir')!");
 }
 
 MapcrafterConfig::MapcrafterConfig() {
@@ -187,6 +203,10 @@ fs::path MapcrafterConfig::getOutputDir() const {
 
 fs::path MapcrafterConfig::getTemplateDir() const {
 	return root_section.getTemplateDir();
+}
+
+fs::path MapcrafterConfig::getTextureDir() const {
+    return root_section.getTextureDir();
 }
 
 fs::path MapcrafterConfig::getOutputPath(const std::string& path) const {

@@ -18,6 +18,7 @@
  */
 
 #include "mapcraftercore/config/loggingconfig.h"
+#include "mapcraftercore/config/mapcrafterconfig.h"
 #include "mapcraftercore/renderer/manager.h"
 #include "mapcraftercore/util.h"
 #include "mapcraftercore/version.h"
@@ -48,12 +49,14 @@ int main(int argc, char** argv) {
 
 	renderer::RenderOpts opts;
 	std::string arg_color, arg_config;
+  std::string arg_template_dir, arg_texture_dir;
 
 	po::options_description general("General options");
 	general.add_options()
 		("help,h", "shows this help message")
 		("version,v", "shows the version of Mapcrafter")
-		("mc-version", "shows the required Minecraft version");
+		("mc-version", "shows the required Minecraft version")
+    ("find-resources",    "shows available resource paths");
 
 	po::options_description logging("Logging/output options");
 	logging.add_options()
@@ -65,7 +68,6 @@ int main(int argc, char** argv) {
 
 	po::options_description renderer("Renderer options");
 	renderer.add_options()
-		("find-resources", "shows available resource paths, for example template/texture directory and global logging configuration file")
 		("config,c", po::value<std::string>(&arg_config),
 			"the path to the configuration file to use (required)")
 		("render-skip,s", po::value<std::vector<std::string>>(&opts.render_skip)->multitoken(),
@@ -77,7 +79,11 @@ int main(int argc, char** argv) {
 			"renders the specified map(s) completely")
 		("render-force-all,F", "force renders all maps")
 		("jobs,j", po::value<int>(&opts.jobs)->default_value(1),
-			"the count of jobs to use when rendering the map");
+			"the count of jobs to use when rendering the map")
+    ("template-dir", po::value<std::string>(&arg_template_dir),
+      "override the template directory")
+    ("texture-dir", po::value<std::string>(&arg_texture_dir),
+      "override the texture directory");
 
 	po::options_description all("Allowed options");
 	all.add(general).add(logging).add(renderer);
@@ -127,39 +133,23 @@ int main(int argc, char** argv) {
 	}
 
 	if (vm.count("find-resources")) {
-		fs::path mapcrafter_bin = util::findExecutablePath();
-		std::cout << "Your home directory: " << util::findHomeDir().string() << std::endl;
-		std::cout << "Mapcrafter binary: " << mapcrafter_bin.string() << std::endl;
+    fs::path bin = util::findExecutablePath();
+    std::cout << "Your home directory: " << util::findHomeDir().string() << "\n"
+              << "Mapcrafter binary:  " << bin.string() << "\n";
 
-		util::PathList resources = util::findResourceDirs(mapcrafter_bin);
-		std::cout << "Resource directories:" << std::endl;
-		for (size_t i = 0; i < resources.size(); i++)
-			std::cout << "  " << i+1 << ". " << BOOST_FS_ABSOLUTE1(resources[i]).string() << std::endl;
-		if (resources.size() == 0)
-			std::cout << "  Nothing found." << std::endl;
+    // if user passed --template-dir, use it; otherwise fall back to util::findTemplateDir()
+    fs::path tpl = arg_template_dir.empty()
+                   ? util::findTemplateDir()
+                   : fs::path(arg_template_dir);
+    fs::path tex = arg_texture_dir.empty()
+                   ? util::findTextureDir()
+                   : fs::path(arg_texture_dir);
 
-		util::PathList templates = util::findTemplateDirs(mapcrafter_bin);
-		std::cout << "Template directories:" << std::endl;
-		for (size_t i = 0; i < templates.size(); i++)
-			std::cout << "  " << i+1 << ". " << BOOST_FS_ABSOLUTE1(templates[i]).string() << std::endl;
-		if (templates.size() == 0)
-			std::cout << "  Nothing found." << std::endl;
-
-		util::PathList textures = util::findTextureDirs(mapcrafter_bin);
-		std::cout << "Texture directories:" << std::endl;
-		for (size_t i = 0; i < textures.size(); i++)
-			std::cout << "  " << i+1 << ". " << BOOST_FS_ABSOLUTE1(textures[i]).string() << std::endl;
-		if (textures.size() == 0)
-			std::cout << "  Nothing found." << std::endl;
-
-		util::PathList configs = util::findLoggingConfigFiles(mapcrafter_bin);
-		std::cout << "Logging configuration file:" << std::endl;
-		for (size_t i = 0; i < configs.size(); i++)
-			std::cout << "  " << i+1 << ". " << BOOST_FS_ABSOLUTE1(configs[i]).string() << std::endl;
-		if (configs.size() == 0)
-			std::cout << "  Nothing found." << std::endl;
-		return 0;
-	}
+    std::cout << "Template directory: " << tpl.string() << "\n"
+              << "Texture directory:  " << tex.string() << "\n"
+              << "Logging config:     " << opts.logging_config.string() << "\n";
+    return 0;
+  }
 
 	if (!vm.count("config")) {
 		std::cerr << "You have to specify a configuration file!" << std::endl;
@@ -187,6 +177,10 @@ int main(int argc, char** argv) {
 	config::MapcrafterConfig config;
 	config::ValidationMap validation = config.parseFile(opts.config.string());
 
+	if (!arg_template_dir.empty()) config.overrideTemplateDir(fs::path(arg_template_dir));
+	if (!arg_texture_dir.empty())  config.overrideTextureDir(fs::path(arg_texture_dir));
+
+	
 	// show infos/warnings/errors if configuration file has something
 	if (!validation.isEmpty()) {
 		if (validation.isCritical())
