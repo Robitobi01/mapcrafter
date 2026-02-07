@@ -1,9 +1,14 @@
-{ stdenv, cmake, boost, libpng, libjpeg }:
+{ lib, stdenv, cmake, boost, libpng, libjpeg }:
 
 stdenv.mkDerivation {
   pname = "mapcrafter";
   version = "unstable";
-  src = ./.;
+
+  src = lib.cleanSourceWith {
+    src = lib.cleanSource ./.;
+    filter = name: type: baseNameOf name != "build";
+  };
+
   nativeBuildInputs = [ cmake ];
   buildInputs = [ boost libpng libjpeg ];
 }
