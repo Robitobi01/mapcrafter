@@ -23,6 +23,7 @@
 #include "../rendermode.h"
 #include "../../mc/pos.h"
 
+#include <cstdint>
 #include <vector>
 
 namespace mapcrafter {

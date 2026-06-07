@@ -23,6 +23,7 @@
 #include "../../image.h"
 #include "../../tilerenderer.h"
 
+#include <cstdint>
 #include <boost/filesystem.hpp>
 
 namespace fs = boost::filesystem;

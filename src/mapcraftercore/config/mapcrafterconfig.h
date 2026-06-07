@@ -26,6 +26,7 @@
 #include "configsections/marker.h"
 #include "configsections/world.h"
 
+#include <cstdint>
 #include <iostream>
 #include <map>
 #include <string>

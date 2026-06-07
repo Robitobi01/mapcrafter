@@ -23,6 +23,7 @@
 #include "pos.h"
 
 #include <bitset>
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>

@@ -23,6 +23,7 @@
 #include "biomes.h"
 #include "../mc/worldcache.h" // mc::DIR_*
 
+#include <cstdint>
 #include <vector>
 #include <boost/filesystem.hpp>
 

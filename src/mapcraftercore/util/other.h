@@ -20,6 +20,7 @@
 #ifndef OTHER_H_
 #define OTHER_H_
 
+#include <cstdint>
 #include <string>
 #include <sstream>
 #include <boost/filesystem.hpp>

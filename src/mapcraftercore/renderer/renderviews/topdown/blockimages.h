@@ -22,6 +22,8 @@
 
 #include "../../blockimages.h"
 
+#include <cstdint>
+
 namespace mapcrafter {
 namespace renderer {
 

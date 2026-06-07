@@ -23,6 +23,7 @@
 #include "renderview.h"
 #include "../mc/worldcache.h"
 
+#include <cstdint>
 #include <iostream>
 #include <memory>
 #include <string>

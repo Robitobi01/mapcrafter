@@ -24,6 +24,7 @@
 #include "pos.h"
 #include "worldcrop.h"
 
+#include <cstdint>
 #include <set>
 #include <string>
 #include <vector>

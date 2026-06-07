@@ -25,6 +25,7 @@
 #include "region.h"
 #include "world.h"
 
+#include <cstdint>
 #include <set>
 
 namespace mapcrafter {

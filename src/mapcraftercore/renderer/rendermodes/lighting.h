@@ -23,6 +23,7 @@
 #include "../rendermode.h"
 
 #include <array>
+#include <cstdint>
 
 namespace mapcrafter {
 namespace renderer {

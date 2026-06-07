@@ -10,5 +10,5 @@ target_link_libraries(testtextures mapcraftercore "${Boost_PROGRAM_OPTIONS_LIBRA
 add_executable(mapcraftertest mapcraftertest.cpp)
 target_link_libraries(mapcraftertest mapcraftercore)
 
-install(PROGRAMS "${CMAKE_CURRENT_SOURCE_DIR}/mapcrafter_textures.py" DESTINATION bin)
-install(PROGRAMS "${CMAKE_CURRENT_SOURCE_DIR}/mapcrafter_png-it.py" DESTINATION bin)
+install(PROGRAMS "${CMAKE_CURRENT_SOURCE_DIR}/mapcrafter_textures.py" DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(PROGRAMS "${CMAKE_CURRENT_SOURCE_DIR}/mapcrafter_png-it.py" DESTINATION ${CMAKE_INSTALL_BINDIR})

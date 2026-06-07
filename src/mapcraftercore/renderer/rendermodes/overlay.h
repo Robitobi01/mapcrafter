@@ -25,6 +25,7 @@
 
 #include "../image.h"
 
+#include <cstdint>
 #include <tuple>
 
 namespace mapcrafter {
@@ -83,4 +84,3 @@ private:
 }
 
 #endif /* RENDERMODES_OVERLAY_H_ */
-

@@ -14,16 +14,16 @@ add_custom_target(gen_texture_code
 
 add_executable(mapcrafter_export mapcrafter_export.cpp)
 target_link_libraries(mapcrafter_export mapcraftercore "${Boost_PROGRAM_OPTIONS_LIBRARY}")
-install(TARGETS mapcrafter_export DESTINATION bin)
+install(TARGETS mapcrafter_export DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 add_executable(mapcrafter mapcrafter.cpp)
 target_link_libraries(mapcrafter mapcraftercore "${Boost_PROGRAM_OPTIONS_LIBRARY}")
-install(TARGETS mapcrafter DESTINATION bin)
+install(TARGETS mapcrafter DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 add_executable(mapcrafter_markers mapcrafter_markers.cpp)
 target_link_libraries(mapcrafter_markers mapcraftercore "${Boost_PROGRAM_OPTIONS_LIBRARY}")
-install(TARGETS mapcrafter_markers DESTINATION bin)
+install(TARGETS mapcrafter_markers DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-install(FILES logging.conf DESTINATION ../etc/mapcrafter)
-install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/data/template" DESTINATION share/mapcrafter)
-install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/data/textures" DESTINATION share/mapcrafter)
+install(FILES logging.conf DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/mapcrafter)
+install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/data/template" DESTINATION ${CMAKE_INSTALL_DATADIR}/mapcrafter)
+install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/data/textures" DESTINATION ${CMAKE_INSTALL_DATADIR}/mapcrafter)

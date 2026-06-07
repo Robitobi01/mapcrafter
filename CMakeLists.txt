@@ -1,8 +1,13 @@
 cmake_minimum_required(VERSION 3.10)
 project(mapcrafter)
 
+include(GNUInstallDirs)
+
 if(POLICY CMP0167)
     cmake_policy(SET CMP0167 OLD)
+endif()
+if(POLICY CMP0077)
+    cmake_policy(SET CMP0077 NEW)
 endif()
 set(Boost_NO_BOOST_CMAKE ON)
 set(Boost_NO_WARN_NEW_VERSIONS ON)
@@ -10,6 +15,14 @@ set(Boost_NO_WARN_NEW_VERSIONS ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+option(BUILD_TESTING "Build tests" ON)
+if(NOT BUILD_TESTING)
+    set(OPT_SKIP_TESTS ON)
+endif()
+if(DEFINED CMAKE_EXPORT_NO_PACKAGE_REGISTRY)
+    set(CMAKE_EXPORT_NO_PACKAGE_REGISTRY ${CMAKE_EXPORT_NO_PACKAGE_REGISTRY})
+endif()
 
 option(OPT_DEBUG "Sets debug compiler flags" OFF)
 option(OPT_OPTIMIZE "Sets optimize compiler flags" ON)

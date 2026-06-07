@@ -23,6 +23,8 @@
 #include "overlay.h"
 #include "../rendermode.h"
 
+#include <cstdint>
+
 namespace mapcrafter {
 namespace renderer {
 
