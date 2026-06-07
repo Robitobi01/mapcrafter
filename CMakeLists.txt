@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.5)
 project(mapcrafter)
 
+if(POLICY CMP0167)
+    cmake_policy(SET CMP0167 OLD)
+endif()
+set(Boost_NO_BOOST_CMAKE ON)
+
 option(OPT_DEBUG "Sets debug compiler flags" OFF)
 option(OPT_OPTIMIZE "Sets optimize compiler flags" ON)
 option(OPT_PROFILE "Sets profile compiler flags" OFF)

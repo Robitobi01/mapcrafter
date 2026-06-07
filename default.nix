@@ -13,7 +13,8 @@ stdenv.mkDerivation {
 
   src = lib.cleanSourceWith {
     src = lib.cleanSource ./.;
-    filter = name: type: baseNameOf name != "build";
+    filter = name: type:
+      !(type == "directory" && baseNameOf name == "build");
   };
 
   nativeBuildInputs = [ cmake ];
