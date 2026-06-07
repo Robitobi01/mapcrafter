@@ -1,10 +1,15 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 project(mapcrafter)
 
 if(POLICY CMP0167)
     cmake_policy(SET CMP0167 OLD)
 endif()
 set(Boost_NO_BOOST_CMAKE ON)
+set(Boost_NO_WARN_NEW_VERSIONS ON)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(OPT_DEBUG "Sets debug compiler flags" OFF)
 option(OPT_OPTIMIZE "Sets optimize compiler flags" ON)
@@ -37,18 +42,6 @@ endif()
 
 add_definitions(-Wall)
 
-# http://stackoverflow.com/questions/10851247/how-to-activate-c-11-in-cmake
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-if(COMPILER_SUPPORTS_CXX11)
-    add_definitions(-std=c++11)
-elseif(COMPILER_SUPPORTS_CXX0X)
-    add_definitions(-std=c++0x)
-else()
-    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-endif()
-
 if(OPT_LINK_BOOST_STATICALLY)
     set(Boost_USE_STATIC_LIBS ON)
     # we need zlib to link boost iostreams statically
@@ -56,7 +49,7 @@ if(OPT_LINK_BOOST_STATICALLY)
     include_directories(${ZLIB_INCLUDE_DIRS})
 endif()
 
-find_package(Boost COMPONENTS iostreams system filesystem program_options REQUIRED)
+find_package(Boost COMPONENTS iostreams filesystem program_options REQUIRED)
 if(OPT_USE_BOOST_THREAD)
     find_package(Boost COMPONENTS thread REQUIRED)
 else()
