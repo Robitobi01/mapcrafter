@@ -7,6 +7,10 @@ CMakeCache.txt
 cmake_install.cmake
 install_manifest.txt
 Makefile
+build/
+result
+src/mapcraftercore/config.h
+src/mapcraftercore/version.cpp
 
 !doc/Makefile
 

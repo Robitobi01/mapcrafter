@@ -1,4 +1,11 @@
-{ lib, stdenv, cmake, boost, libpng, libjpeg }:
+{ pkgs ? import <nixpkgs> {}
+, lib ? pkgs.lib
+, stdenv ? pkgs.stdenv
+, cmake ? pkgs.cmake
+, boost ? pkgs.boost
+, libpng ? pkgs.libpng
+, libjpeg ? pkgs.libjpeg
+}:
 
 stdenv.mkDerivation {
   pname = "mapcrafter";
@@ -11,4 +18,6 @@ stdenv.mkDerivation {
 
   nativeBuildInputs = [ cmake ];
   buildInputs = [ boost libpng libjpeg ];
+
+  cmakeFlags = [ "-DOPT_SKIP_TESTS=ON" ];
 }
